@@ -1,0 +1,352 @@
+
+DROP TABLE Distributor Cascade Constraints;
+DROP TABLE Movies CASCADE CONSTRAINTS;
+DROP TABLE Actors CASCADE CONSTRAINTS;
+DROP TABLE Critics CASCADE CONSTRAINTS;
+DROP TABLE Reviewed CASCADE CONSTRAINTS;
+DROP TABLE Foreign_Movies CASCADE CONSTRAINTS;
+DROP TABLE Comedy CASCADE CONSTRAINTS;
+DROP TABLE Action CASCADE CONSTRAINTS;
+DROP TABLE Drama CASCADE CONSTRAINTS;
+DROP TABLE Horror CASCADE CONSTRAINTS;
+
+
+Create table Distributor
+(DistributorID varchar2(10),
+Name varchar2(50) not null,
+Street_Address varchar2(40),
+City varchar2(40),
+State varchar2(30),
+Zipcode varchar2(15),
+Phone_Number varchar2(15) not null,
+constraint distributorID_pk primary key(distributorID),
+constraint Phone_Number_uk unique (phone_number));
+
+Describe Distributor;
+
+Create table Movies
+(MovieID char(6),
+DistributorID varchar2(10),
+Director varchar2(50) not null,
+Title varchar2(60) not null,
+Rating varchar2(10),
+Release_Date date, 
+Running_Time number(20),
+constraint MovieID_pk primary key(MovieID),
+constraint DistributorID_fk foreign key (DistributorID) references Distributor(DistributorID));
+
+Describe Movies;
+
+
+Create table Actors
+(MovieID char(6),
+ActorID varchar2(10),
+Last_Name varchar2(30),
+First_Name varchar2(20),
+Phone_Number varchar2(15),
+constraint Actors_PK PRIMARY KEY (MovieID, ActorID),
+constraint Actors_MovieID_FK FOREIGN KEY (MovieID) REFERENCES Movies (MovieID));
+
+Describe Actors;
+
+
+Create table Critics
+(CriticID char(5),
+Name varchar2(30) not null,
+Phone_Number varchar2(15),
+constraint CriticID_pk primary key (CriticID));
+
+Describe Critics;
+
+Create table Reviewed
+(CriticID char(5), 
+MovieID char(6),
+Evaluation varchar2(10),
+constraint PK_Reviewed PRIMARY KEY (CriticID, MovieID),
+constraint reviewed_CriticID_fk foreign key (CriticID) references Critics(CriticID),
+constraint reviewed_MovieID_fk foreign key (MovieID) references Movies(MovieID));
+
+Describe Reviewed;
+
+Create table Foreign_Movies
+(MovieID char(6),
+Subtitles varchar2(255),
+Foregin_Language varchar2(255),
+constraint fm_MovieID_pk primary key(MovieID),
+constraint fm_MovieID_fk foreign key (MovieID) references Movies(MovieID));
+
+Describe Foreign_Movies;
+
+
+Create table Comedy 
+(MovieID char(6),
+Degree_of_Funniness number (10),
+ CONSTRAINT comedy_MovieID_pk primary key (MovieID),
+ CONSTRAINT comedy_MovieID_fk foreign key (MovieID) references Movies (MovieID),
+ CONSTRAINT comedy_Degree_of_Funniness_ck CHECK (Degree_of_Funniness IN (1,2,3,4,5)));
+
+Describe Comedy; 
+
+
+ Create table Drama
+ (MovieID char (6), 
+ Description varchar2(255),
+ CONSTRAINT drama_MovieID_pk primary key (MovieID),
+ CONSTRAINT drama_MovieID_fk foreign key (MovieID) references Movies(MovieID));
+
+Describe Drama; 
+
+ Create table Action
+ (MovieID char(6), 
+ mtype varchar2 (100),
+ CONSTRAINT action_MovieID_pk primary key (MovieID),
+ CONSTRAINT action_MovieID_fk foreign key (MovieID) references Movies (MovieID));
+ 
+Describe Action; 
+
+ Create table Horror
+(MovieID char (6),
+ Mtype varchar2 (100), 
+ CONSTRAINT horror_MovieID_pk_MovieID_pk primary key (MovieID),
+ CONSTRAINT horror_MovieID_fk foreign key (MovieID)references Movies (MovieID));
+ 
+Describe Horror;
+
+
+Insert into Distributor 
+Values ('A12732','Troma Films', '4532 Perrywinkle Avenue', 'Los Angeles', 'California', 90021, '213-555-7689');
+Insert into Distributor
+Values('B54663','Universal Pictures', '8970 Buckwick Place', 'Los Angeles', 'California', 90001, '323-900-5599');
+Insert into Distributor
+Values('C56712', 'Lion Gate Films', '7692 Point Pleasant Place', 'Pasedena', 'California', 90034, '323-789-0123');
+Insert into Distributor
+Values('D55441', '20th Centrury Fox', '1440 South Sepulveda Boulevard', 'Los Angeles', 'California', 90025, '301-369-1000');
+Insert into Distributor
+Values('E90123', 'Perry Studios', '315 Deshler St SW', 'Atlanta', 'Georgia', 65342, '678-500-3710');
+Insert into Distributor
+Values('F87654', 'Bond Films', '100th York Avenue', 'Buffalo', 'New York', 14209, '768-444-7789');
+Insert into Distributor
+Values('G001123', 'Mingz Productions', '5543 York Avenue', 'Beverly Hills', 'California', 90210, '323-111-5555');
+Insert into Distributor 
+Values ('H12345', 'Walt Disney Films', '2212 Majestic Place', 'Fairfax', 'Virginia', 22033, '703-222-4546');
+
+
+Insert into Movies ------Comedy Movie directed by John Woo
+VALUES('ABC123', 'C56712', 'John Woo', 'Crazy Rich Asians','5 stars', '7-July-2018', 145);
+insert into Movies ------ Action Movie Directed By John Woo (foregin movie)
+VALUES('ABC456', 'C56712', 'John Woo', 'Black Panther', '5 stars', '11-November-2018', 230);
+insert into Movies ---------Action Movie Directed By John Woo
+VALUES('ABC789', 'C56712', 'John Woo', 'Casino Royale', '5 stars','20-October-2011', 245);
+Insert into Movies ----Horror Movie distributed by Troma Films 
+Values ('AAA111', 'A12732', 'William H Macy', 'Fauda', '3 stars', '2-February-2019', 150);
+Insert into Movies ---Horror Movie Distributed by Troma Films
+Values('AAA222', 'A12732', 'Jonh Woo', 'Scream', '4 stars', '23-September-2017',180);
+Insert into Movies ---Action Movie Directed by John Woo
+Values ('ABC000', 'D55441', 'John Woo', 'Strike Back', '3 stars', '4-March-2015', 220);
+Insert into Movies ----Horror Movie distributed by Troma Films
+Values ('AAA333', 'A12732', 'John Krasinski', 'A quiet Place', '5 stars', '6-April-2018',130);
+Insert into Movies -----Horror Movie distributed by Troma Films
+Values('AAA444', 'A12732', 'Steven Speilberg', 'Jaws', '4 stars', '1-June-1975', 210);
+Insert into Movies -----Comedy ---funniness rating 1 star
+Values('CCC123', 'G001123', 'Mike Russel', 'Devil Wears Prada', '1 star', '12-May-2012', 150);
+Insert into Movies -------Comedy funniness rating 1 
+Values('CCC122', 'H12345', 'Jason Bateman', 'Oceans 8', '1 star', '5-June-2018', 135);
+Insert into Movies ----Comedy funniness rating 5
+Values('CCC133', 'F87654', 'Malcom Lee', 'Girls Trip', '5 stars', '10-December-2017', 122);
+Insert into Movies ------Comedy funniness rating 5
+Values ('CCC144', 'E90123', 'Michael Razemi', 'Mary Poppins Returns', '5 stars', '23-July-2016', 160);
+Insert into Movies  ------Drama movie 
+Values ('DDD212', 'E90123', 'Ferrera America', 'Bletchley Circle', '3 stars', '15-August-2014', 115);
+
+
+
+Insert into Action
+Values('ABC456', 'Action');
+Insert into Action 
+Values ('ABC789','Action');
+Insert into Action
+Values ('ABC000', 'Action');
+
+
+Insert into Horror
+Values('AAA111', 'Horror');
+Insert into Horror
+Values('AAA222', 'Horror');
+Insert into Horror
+Values ('AAA333', 'Horror');
+Insert into Horror
+Values ('AAA444', 'Horror');
+
+
+Insert into Comedy
+Values('ABC123', 5);
+Insert into Comedy
+Values ('CCC123', 1);
+Insert into Comedy 
+Values('CCC122', 1);
+Insert into Comedy
+Values ('ABC123', 5);
+Insert into Comedy 
+Values ('CCC144', 5);
+Insert into Comedy 
+Values ('CCC133', 5);
+
+Insert into Drama 
+Values('DDD212', 'Very exciting movie');
+
+
+Insert into Actors 
+Values ('ABC123', 101, 'Woo', 'Constance', '703-345-6565');
+Insert into Actors
+Values ('ABC123', 102, 'Ebert', 'Roger', '301-999-1212');
+Insert into Actors 
+Values ('ABC123', 103, 'Golding', 'Henry', '601-444-5533');
+Insert into Actors
+Values ('ABC123', 104, 'Chang', 'Gemma', '323-111-3212');
+Insert into Actors
+Values('ABC123', 105, 'Jeong', 'Ken', '232-123-4567');
+Insert into Actors
+Values ('AAA333', 106, 'Blunt', 'Emily', '768-321-3311');
+Insert into Actors 
+Values ('AAA333', 107, 'Foley', 'Scott', '624-785-9090');
+Insert into Actors 
+Values ('AAA333', 108, 'Craig', 'Daniel', '901-222-3211');
+Insert into Actors 
+Values('AAA333', 109, 'Dench', 'Judy', '809-987-6543');
+Insert into Actors
+VALUES('AAA333', 110, 'Christie', 'Agatha', '444-333-1111');
+Insert into Actors 
+Values ('ABC456', 111, 'Jordan', 'Michael B', '656-765-7890');
+Insert into Actors 
+Values ('ABC456', 112, 'Nyongo', 'Lupita', '202-111-4532');
+Insert into Actors 
+Values ('AAA111', 113, 'Davis', 'Viola', '404-333-5656');
+Insert into Actors 
+Values ('AAA111', 114, 'Washington', 'Kerry', '900-000-1121');
+Insert into Actors 
+Values ('CCC144', 115, 'Foyle','Claire', '787-500-2000');
+Insert into Actors 
+Values('CCC122', 116, 'Shore', 'Pauly', '616-333-2212');
+Insert into Actors
+Values('CCC122', 117, 'MoneyPenny', 'Bond', '717-215-5656');
+INSERT into Actors
+Values ('CCC123', 116, 'Shore', 'Pauly', '616-333-2212');
+
+
+Insert into Critics
+Values('C1000', 'Roger Ebert', '323-101-9090');
+Insert into Critics
+Values ('C2000', 'Agatha Raisin', '703-111-2323');
+Insert into Critics
+Values( 'C3111', 'Jack Sparrow', '323-900-1000');
+
+
+
+Insert into Reviewed 
+Values ('C1000', 'ABC123', '90%');
+Insert into Reviewed 
+Values ('C1000', 'ABC456', '80%');
+Insert into Reviewed 
+Values ('C1000', 'ABC789', '55%');
+Insert into Reviewed 
+Values ('C1000', 'CCC144', '70%');
+Insert into Reviewed
+Values ('C1000','ABC000', '70%');
+Insert into Reviewed 
+Values ('C2000','CCC133', '88%');
+Insert into Reviewed 
+Values ('C2000','AAA111', '60%');
+Insert into Reviewed
+Values ('C2000','AAA222', '75%');
+Insert into Reviewed 
+Values ('C2000', 'DDD212', '94%');
+Insert into Reviewed 
+Values ('C2000', 'AAA333', '77%');
+Insert into Reviewed 
+Values ('C3111', 'AAA444', '40%');
+Insert into Reviewed 
+Values ('C3111', 'CCC123', '89%');
+Insert into Reviewed 
+Values ('C3111', 'CCC122', '65%');
+
+
+
+SELECT Name 
+FROM Distributor
+WHERE City = 'Los Angeles';
+
+
+SELECT 	m.Director 
+FROM movies m, horror h, distributor d
+WHERE m. movieID = h.movieID
+AND d.distributorID = m.distributorID
+AND d.name = 'Troma Films';
+
+
+
+
+
+SELECT  m.title 
+FROM movies m, comedy c, actors a
+WHERE m.movieID = c.movieID
+AND m.movieID = a.movieID
+AND a.first_name = 'Pauly'
+AND a.last_name = 'Shore'
+AND c.degree_of_funniness = 1;
+
+
+
+
+SELECT m.title
+FROM movies m, action a, reviewed r, critics c
+WHERE m.movieID = a.movieID
+AND m.movieID = r.movieID
+AND r.criticID = c.criticID
+AND m.director = 'John Woo'
+AND c.name = 'Roger Ebert';
+
+
+
+SELECT count(actorID), title
+FROM 
+(SELECT m.title, a.actorID
+FROM movies m join actors a on m.movieID = a.movieID)
+GROUP BY title
+HAVING Count (actorID)> 4;
+
+
+
+
+
+SELECT count(movieID)as TotalMovies
+FROM Movies
+WHERE rating = '5 stars';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
